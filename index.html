@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>proyecto azul</title>
+  <meta name="description" content="proyecto azul — confidencial sala 13" />
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000;
+      --txt: #00ff66; /* verde terminal matrix */
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--txt); font-family: 'VT323', monospace; overflow: hidden; }
+    body { display: grid; place-items: center; }
+    .screen { text-align: left; font-size: clamp(18px, 3vw, 30px); line-height: 1.4; }
+    .cursor { display:inline-block; width:1ch; animation: blink 1s steps(1,end) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    button { background: none; border: none; color: inherit; font: inherit; cursor: pointer; }
+    .hidden { opacity: 0; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <section id="s1" class="screen">
+    <div id="title">proyecto azul</div>
+    <div style="margin-top:1.5rem">
+      <span>&gt;</span> <button id="enter">enter</button><span class="cursor">▌</span>
+    </div>
+  </section>
+
+  <section id="s2" class="screen hidden">
+    <div id="text"></div>
+    <div class="cursor">▌</div>
+  </section>
+
+  <script>
+    const s1 = document.getElementById('s1');
+    const s2 = document.getElementById('s2');
+    const btn = document.getElementById('enter');
+    const text = document.getElementById('text');
+    const lines = [
+      'there is some fiction in your truth,',
+      'and some truth in your fiction.',
+      '',
+      'el proyecto azul no se detiene.',
+      'solo cambia de jugadores.'
+    ];
+    function type(lines, el, speed=40){
+      el.textContent='';
+      let i=0,j=0;
+      function tick(){
+        if(i>=lines.length) return;
+        const line = lines[i];
+        if(j<line.length){
+          el.textContent += line[j++];
+          setTimeout(tick, speed + Math.random()*25);
+        } else {
+          el.textContent += '\n'; i++; j=0; setTimeout(tick, 600);
+        }
+      }
+      tick();
+    }
+    function go(){ s1.classList.add('hidden'); s2.classList.remove('hidden'); setTimeout(()=>type(lines,text),250); }
+    btn.addEventListener('click', go);
+    window.addEventListener('keydown', e => { if(e.key==='Enter') go(); });
+  </script>
+</body>
+</html>
